@@ -8,13 +8,30 @@ class Game extends PIXI.Application {
   constructor({
     width,
     height,
-    options
+    options,
+    store
   }) {
+    console.log(store)
     super(width, height, options);
+    this.keys = {
+        up: [38, 75, 87],
+        down: [40, 74, 83],
+        left: [37, 65, 72],
+        right: [39, 68, 76],
+        start_game: [13, 32]
+    };
+    this.inverseDirection = {
+      'up':'down',
+      'left':'right',
+      'right':'left',
+      'down':'up'
+    };
     this.width = width;
     this.height = height;
-    this.over = false;
-    this.score = 0;
+    this.over = store.gameOver;
+    this.score = store.gameScore;
+    this.speed = store.gameSpeed;
+    
     this.startMessage = new Message({
       container: this.stage,
       text: 'PRESS SPACE TO START',
@@ -38,34 +55,24 @@ class Game extends PIXI.Application {
       fontSize: 500,
       alpha: 0.2
     })
-     this.keys = {
-        up: [38, 75, 87],
-        down: [40, 74, 83],
-        left: [37, 65, 72],
-        right: [39, 68, 76],
-        start_game: [13, 32]
-    };
-    this.speed = 500;
-    this.inverseDirection = {
-      'up':'down',
-      'left':'right',
-      'right':'left',
-      'down':'up'
-    };
+
     this.startMove = null;
+
     this.scoreEl.listenToScoreChanging();
     this.addGameToPage();
     this.addKeysListener();
   }
+
   addKeysListener(){
     window.addEventListener('keydown', (e)=>{
       let lastKey = this.getKey(this.keys, e.keyCode);
       if(['up','right','down','left'].indexOf(lastKey) >=0
-        && lastKey !== this.inverseDirection[game.snake.direction]
+        && lastKey !== this.inverseDirection[store.snakeDirection]
         ){
+        
         this.snake.direction = lastKey;
       } else if(['start_game'].indexOf(lastKey) >=0 ){
-       this.startGame();
+        this.startGame();
         this.startMove = setInterval(()=>{
           this.snake.move();
         }, this.speed)
@@ -84,7 +91,6 @@ class Game extends PIXI.Application {
   stopMove(){
     clearInterval(this.startMove); 
   }
-
 
   startGame(){
     this.over = false;
@@ -123,7 +129,7 @@ class Game extends PIXI.Application {
   stopGame(){
     this.over = true;
     this.score = 0;
-    ee.emitEvent('scoreChanged', [game.score]);
+    ee.emit('scoreChanged', [game.score]);
     this.stopMove();
     this.speed = 500;
     this.reset();

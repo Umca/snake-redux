@@ -1,26 +1,32 @@
 const initialState = {
-    game:{
-        over: false,
-        score: 0,
-        speed: 500,
-        message:'PRESS SPACE TO START',
-    },
-    snake:{
-        direction:'left',
-        coords:[],
-        color:0X2FC650,
-        size: 20,
-        amount: 4
-    },
-    food:{
-        coords:[],
-        color:0xEEDF2F,
-        size: 20
-    }
+    gameOver: false,
+    gameScore: 0,
+    gameSpeed: 300,
+
+    snakeDirection:'left',
+    snakeCoords:[],
+    snakeColor:0X2FC650,
+    snakeSize: 20,
+    snakeAmount: 4,
+
+    foodCoords:[],
+    foodColor:0xEEDF2F,
+    foodSize: 20
 }
 
 const reducer = (state = initialState, action) => {
-    return state;
+    switch(action.type){
+        case 'START_GAME':
+            return {...state, gameOver: false};
+        case 'END_GAME':
+            return {...state, gameOver: true};
+        case 'ADD_SCORE':
+            break;
+        case "CHANGE_DIRECTION":
+            return{...state, snakeDirection: action.direction}
+        default:
+            return state;
+    }
 }
 
 export default reducer;

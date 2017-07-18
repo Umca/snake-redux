@@ -31,7 +31,6 @@ class Message extends PIXI.Text{
   }
   
   listenToScoreChanging(){
-    console.log(-1, this)
     ee.on('scoreChanged', this.setScore.bind(this));
   }
   

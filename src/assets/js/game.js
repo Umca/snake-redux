@@ -30,7 +30,7 @@ class Game extends PIXI.Application {
     this.height = height;
     this.over = store.gameOver;
     this.score = store.gameScore;
-    this.speed = store.gameSpeed;
+    this.speedCounter = 0;
     
     this.startMessage = new Message({
       container: this.stage,
@@ -63,6 +63,16 @@ class Game extends PIXI.Application {
     this.addKeysListener();
   }
 
+  tickerFn(){
+    if (this.speedCounter < 20){
+      this.speedCounter++;
+         return;
+      } else {
+        this.snake.move();
+        this.speedCounter = 0;
+      }
+  }
+
   addKeysListener(){
     window.addEventListener('keydown', (e)=>{
       let lastKey = this.getKey(this.keys, e.keyCode);
@@ -72,10 +82,8 @@ class Game extends PIXI.Application {
         
         this.snake.direction = lastKey;
       } else if(['start_game'].indexOf(lastKey) >=0 ){
-        this.startGame();
-        this.startMove = setInterval(()=>{
-          this.snake.move();
-        }, this.speed)
+        this.startGame();        
+        this.ticker.add(this.tickerFn, this)
       }
     })
   }
@@ -89,7 +97,9 @@ class Game extends PIXI.Application {
   }
 
   stopMove(){
-    clearInterval(this.startMove); 
+    //clearInterval(this.startMove); 
+    this.ticker.remove(this.tickerFn, this)
+    console.log(this.ticker)
   }
 
   startGame(){

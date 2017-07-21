@@ -1,8 +1,6 @@
-const startGame = (snakeCoords, foodCoords) => {
+const startGame = () => {
     return {
-        type: 'START_GAME',
-        snakeCoords,
-        foodCoords
+        type: 'START_GAME'
     }
 }
 
@@ -27,6 +25,34 @@ const changeDirection = (direction) => {
     }
 }
 
-const userAction = (keyPressed) => {
-    
+export const userAction = (keyPressed) => {
+    return (dispatch, getState)=>{
+        let store = getState();
+         let inverseDirection = {
+            'up':'down',
+            'left':'right',
+            'right':'left',
+            'down':'up'
+        };
+        if(['up','right','down','left'].indexOf(keyPressed) >=0 && keyPressed !== inverseDirection[store.snakeDirection]) {
+            dispatch(changeDirection(keyPressed))
+        } else if(['start_game'].indexOf(keyPressed) >=0 ){       
+            dispatch(startGame())
+        }
+    }
 }
+   
+const snakeInit = (coords) => {
+    return{
+        type: 'SNAKE_INIT',
+        coords
+    }
+}
+
+const foodSet = (coords) => {
+    return{
+        type: 'FOOD_SET',
+        coords
+    }
+}
+

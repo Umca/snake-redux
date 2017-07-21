@@ -24,34 +24,33 @@ class Message extends PIXI.Text{
     this.x = x;
     this.y = y;
     this.currentText = text;
-    this.container = container;
     this.alpha = alpha;
     this.pivot.x = this.width / 2;
-    this.container.addChild(this);
+    container.addChild(this);
+
+    ee.on('message', () => {
+      let val = arguments[0]
+      this.text = val
+    })
   }
-  
+
+  set messageText(newMes){
+    this.text = newMes
+  }
+
+  set messageActive(bool){
+    if(bool){
+      this.alpha = 1;
+    } else {
+      this.alpha = 0;
+    }
+  }
+
+
   listenToScoreChanging(){
     ee.on('scoreChanged', this.setScore.bind(this));
   }
   
-  setScore(){
-    let val = arguments[0]
-    console.log(0, this.x)
-    switch(val.length){  
-      case 2 : debugger; this.x= game.view.width * 0.258; break;
-      default: this.x =  game.view.width / 2; console.log(1, this.x)  ; break;  
-      console.log(1, this.x)  
-    }
-    this.tween = TweenMax.to(this, 0.3, {
-      onStart:()=>{
-        console.log(this)
-      },
-      currentText: val,
-      onComplete: ()=>{
-        this.text = val;
-      }
-    })
-  }
   
   appear(){
     TweenMax.from(this, 0.5, {

@@ -1,6 +1,7 @@
 import Game from './assets/js/game';
 import store from './assets/js/store';
 
+
 window.store = store;
 
 window.game = new Game({

@@ -12,17 +12,19 @@ class Snake extends PIXI.Container{
     super();
     this.x = x;
     this.y = y;
-    this.container = container;
-    this.container.addChild(this);
     this.amount = 4;
     this.size = 20;
     this.color = 0X2FC650;
     this.direction = 'left';
     this.coords=[];
     this.alpha = alpha;
-    
-    this.addItems()
+
   }
+
+
+
+
+
   addItems(){
     let startX = game.view.width / 2 ;
     let startY = game.view.height / 2;

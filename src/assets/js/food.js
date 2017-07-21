@@ -3,12 +3,10 @@ import ee from './event';
 
 class Food extends PIXI.Graphics{
   constructor({
-    container,
-    alpha,    
+    alpha,
+    container    
   }){
     super();
-    this.container = container;
-    this.container.addChild(this);
     this.size = 20;
     this.alpha = alpha;
     this.beginFill(0xEEDF2F);
@@ -18,20 +16,33 @@ class Food extends PIXI.Graphics{
       this.size,
       this.size);
     this.endFill();
-    this.x = Math.floor(Math.random() * (((game.view.width-this.size)/this.size) +1)) * this.size;
-    this.y = Math.floor(Math.random() * (((game.view.height-this.size)/this.size) +1)) * this.size;
-    console.log(this.x, this.y)
+    this.container = container;
+  }
+
+  set foodColor(newVal){
+    this.color = newVal;
+  }
+  set foodSize(newVal){
+    this.width = newVal;
+    this.height = newVal;
+  }
+  set foodCoords(newVal){
+    this.x = newVal[0];
+    this.y = newVal[1];
+  }
+  set foodActive(bool){
+    this.container.addChild(this);
   }
   
   set(){
-    let x = this.getNewCoords(), y = this.getNewCoords();
+    let x = this.getNewCoords(),
+        y = this.getNewCoords();
     while(this.isIncluded([x, y])){
       x = this. getNewCoords();
       y = this. getNewCoords();
     }
     this.x = x;
     this.y = y;
-    console.log(this.x, this.y)
   }
   
   getNewCoords(){

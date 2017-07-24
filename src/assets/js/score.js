@@ -40,14 +40,9 @@ class Score extends PIXI.Text {
                 break;
             default:
                 this.x = game.view.width / 2;
-                console.log(1, this.x);
                 break;
-                console.log(1, this.x)
         }
         this.tween = TweenMax.to(this, 0.3, {
-            onStart: () => {
-                console.log(this)
-            },
             currentText: val,
             onComplete: () => {
                 this.text = val;

@@ -41,13 +41,9 @@ class Reactive{
     }
 
     bindToComponent(component, layer){
-        console.log(Object.getOwnPropertyDescriptor(this, 'game'))
         for (let prop in this[layer]){
-            console.log(prop)
-            console.log(this[layer].hasOwnProperty(prop))
             if (this[layer].hasOwnProperty(prop)){
                 ee.on(`${prop}`, (args) => {
-                    console.log(1, args)
                     let val = args
                     component[prop] = val;
                 });

@@ -6,7 +6,10 @@ import Snake from './snake';
 import {Model} from './model';
 import Score from './score';
 import {
-  userAction
+  userAction,
+  addScore,
+  endGame,
+  setFood
 } from './action';
 
 class Game extends PIXI.Application {
@@ -48,16 +51,25 @@ class Game extends PIXI.Application {
      this.snake = new Snake({
       x: store.snake.snakeCoords[0][0],
       y: store.snake.snakeCoords[0][1],
-      alpha: 1
+      alpha: 1,
+      container: this.stage
     });
     this.food = new Food({
-      alpha: 1
+      alpha: 1,
+      container: this.stage
     });
 
     this.binding(store);
     this.addGameToPage();
     this.addKeysListener();
-    //this.score.listenToScoreChanging();
+
+  }
+  set gameOver(bool){
+    if (!bool){
+      this.ticker.add(this.tickerFn, this);
+    } else {
+      this.stopGame();
+    }
   }
 
   tickerFn() {
@@ -81,16 +93,6 @@ class Game extends PIXI.Application {
     window.addEventListener('keydown', (e) => {
       let lastKey = this.getKey(this.keys, e.keyCode);
       store.dispatch(userAction(lastKey));
-
-      // if(['up','right','down','left'].indexOf(lastKey) >=0
-      //   && lastKey !== this.inverseDirection[store.snakeDirection]
-      //   ){
-
-      //   this.snake.direction = lastKey;
-      // } else if(['start_game'].indexOf(lastKey) >=0 ){
-      //   this.startGame();        
-      //   this.ticker.add(this.tickerFn, this)
-      // }
     })
   }
   getKey(obj, value) {
@@ -102,35 +104,12 @@ class Game extends PIXI.Application {
     return null;
   }
 
-  startGame() {
-    this.over = false;
-    this.startMessage.alpha = 0;
-    if (this.endMessage) {
-      this.endMessage.alpha = 0;
-    }
-    this.addSnake();
-    this.addFood();
-  }
   addGameToPage() {
     let windowW = window.innerWidth;
     let windowH = window.innerHeight;
     document.body.appendChild(this.view);
     this.view.style.position = 'absolute';
     this.view.style.left = `${windowW * 0.5 - this.view.width * 0.5}px`;
-  }
-  addSnake() {
-    this.snake = new Snake({
-      container: this.stage,
-      x: 0,
-      y: 0,
-      alpha: 1
-    })
-  }
-  addFood() {
-    this.food = new Food({
-      container: this.stage,
-      alpha: 1
-    })
   }
   reset() {
     this.stage.removeChild(this.food);
@@ -139,13 +118,52 @@ class Game extends PIXI.Application {
   stopGame() {
     this.ticker.remove(this.tickerFn, this);
     this.reset();
-    this.over = true;
-    this.score = 0;
-    ee.emit('scoreChanged', [game.score]);
-    this.endMessage.alpha = 1;
-    this.endMessage.appear();
-    this.startMessage.alpha = 1;
   }
+
+  checkCollision(arr){
+      let [x, y] = arr;
+      if(x > this.view.width - this.snake.size || y > this.view.height - this.snake.size || x < 0 || y < 0 || this.snake.isCannibal([x,y])){
+        store.dispatch(endGame())
+      }
+  }
+
+  checkCollisionwithFood(arr){
+    let headX = arr[0],
+        headY = arr[1];
+    let headCenterX = headX + this.snake.size / 2;
+    let headCenterY = headY + this.snake.size / 2;
+    let foodCenterX = this.food.x + this.food.size / 2;
+    let foodCenterY = this.food.y + this.food.size / 2;
+    
+    let vx = headCenterX - foodCenterX ;
+    let vy = headCenterY - foodCenterY ; 
+    
+    if(Math.abs(vx) < this.snake.size){
+      if(Math.abs(vy) < this.snake.size){
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  
+  shouldEat(arr){
+    if(this.checkCollisionwithFood(arr)){
+      let score = parseInt(this.score.text) + 1;
+      store.dispatch(addScore(score));
+      if(this.score % 5 === 0 && this.score <=20 ){
+        this.speed -= 100;
+      }
+      this.food.setFood();
+      //store.dispatch(setFood())
+      this.snake.countNewCoord();
+      this.snake.drawItem(this.snake.coords[this.snake.coords.length - 1][0], this.snake.coords[this.snake.coords.length - 1][1]);
+    }
+  }
+  
+  
 }
 
 export default Game;

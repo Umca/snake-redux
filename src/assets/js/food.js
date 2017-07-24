@@ -31,10 +31,16 @@ class Food extends PIXI.Graphics{
     this.y = newVal[1];
   }
   set foodActive(bool){
-    this.container.addChild(this);
+    if(bool){
+      this.setFood();
+      this.container.addChild(this);
+    } else {
+      this.alpha = 0;
+    }
+    
   }
   
-  set(){
+  setFood(){
     let x = this.getNewCoords(),
         y = this.getNewCoords();
     while(this.isIncluded([x, y])){

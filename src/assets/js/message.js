@@ -35,7 +35,11 @@ class Message extends PIXI.Text{
   }
 
   set messageText(newMes){
-    this.text = newMes
+    this.text = newMes;
+    if(newMes.indexOf('over')){
+      this.x = 300;
+      this.y = 200;
+    }
   }
 
   set messageActive(bool){

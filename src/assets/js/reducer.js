@@ -30,16 +30,31 @@ const initialState = {
 const reducer = (state = new Reactive(initialState), action) => {
     switch(action.type){
         case 'START_GAME':
-        console.log(12)
-            let res = {...state, gameOver: false, snakeCoords:[20, 20]};
-            console.log(res);
-            return res;
+            state = {...state}
+            state.game.gameOver = false;
+            state.message.messageActive = false;
+            state.snake.snakeActive = true;
+            state.food.foodActive = true;
+            state.score.score = 0;
+            return state;
         case 'END_GAME':
-            return {...state, gameOver: true};
+            state = {...state};
+            state.game.gameOver = true;
+            state.message.messageActive = true;
+            state.message.messageText = 'GAME OVER! PRESS SPACE TO START';
+            state.snake.snakeActive = false;
+            state.food.foodActive = false;
+            state.score.score = 0;
+            return state;
         case 'ADD_SCORE':
-            break;
+            state = {...state};
+            state.score.score = action.score;
+            return state;
         case "CHANGE_DIRECTION":
-            return{...state, snakeDirection: action.direction}
+            state = {...state}
+            state.snake.snakeDirection = action.direction;
+            console.log(action.direction);
+            return state;
         default:
             return state;
     }

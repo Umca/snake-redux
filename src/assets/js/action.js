@@ -4,24 +4,23 @@ const startGame = () => {
     }
 }
 
-const endGame = () => {
+export const endGame = () => {
     return{
         type: 'END_GAME'
     }
 }
 
-const addScore = (foodCoords, speed) => {
+export const addScore = (score) => {
     return {
         type: 'ADD_SCORE',
-        foodCoords,
-        speed
+        score
     }
 }
 
 const changeDirection = (direction) => {
     return{
         type: 'CHANGE_DIRECTION',
-        direction
+        direction: direction
     }
 }
 
@@ -49,10 +48,9 @@ const snakeInit = (coords) => {
     }
 }
 
-const foodSet = (coords) => {
+const setFood = () => {
     return{
-        type: 'FOOD_SET',
-        coords
+        type: 'SET_FOOD'
     }
 }
 
